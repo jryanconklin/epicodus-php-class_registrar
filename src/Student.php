@@ -45,7 +45,13 @@
 //Regular Methods
         function save()
         {
-
+            $date = $this->enrollment_date;
+            $date_exploded = explode("-", $date);
+            $date = $date_exploded[2] . "-" . $date_exploded[0] . "-" . $date_exploded[1];
+            $date = strtotime($date);
+            $date = Date('Y-m-d', $date);
+            $GLOBALS['DB']->exec("INSERT INTO students (name, enrollment_date) VALUES ('{$this->name}', '{$date}');");
+            $this->id = $GLOBALS['DB']->lastInsertId();
         }
 
         function delete()
@@ -75,12 +81,23 @@
 //Static Methods
         static function getAll()
         {
-
+            $returned_students = array();
+            $students = $GLOBALS['DB']->query("SELECT * FROM students;");
+            foreach ($students as $student) {
+                $name = $student['name'];
+                $date = $student['enrollment_date'];
+                $date = strtotime($date);
+                $date = date('m-d-Y', $date);
+                $id = $student['id'];
+                $new_student = new Student($name, $date, $id);
+                array_push($returned_students, $new_student);
+            }
+            return $returned_students;
         }
 
         static function deleteAll()
         {
-
+            $GLOBALS['DB']->exec("DELETE FROM students;");
         }
 
         static function findById()

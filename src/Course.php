@@ -45,17 +45,20 @@
 //Regular Methods
         function save()
         {
-
+            $GLOBALS['DB']->exec(
+            "INSERT INTO courses (course_number, course_name)
+            VALUES ('{$this->course_number}', '{$this->course_name}');");
+            $this->id = $GLOBALS['DB']->lastInsertId();
         }
 
         function delete()
         {
-
+            $GLOBALS['DB']->exec("DELETE FROM courses WHERE id = {$this->id};");
         }
 
         function update()
         {
-
+            $GLOBALS['DB']->exec("UPDATE courses SET course_name = '{$this->course_name}', course_number = '{$this->course_number}'  WHERE id = {$this->id};");
         }
 
         function addStudent()
@@ -75,17 +78,31 @@
 //Static Methods
         static function getAll()
         {
-
+            $courses = array();
+            $courses_data = $GLOBALS['DB']->query("SELECT * FROM courses;");
+            foreach($courses_data as $course) {
+                $id = $course['id'];
+                $course_name = $course['course_name'];
+                $course_number = $course['course_number'];
+                $new_course = new Course($course_number, $course_name, $id);
+                array_push($courses, $new_course);
+            }
+            return $courses;
         }
 
         static function deleteAll()
         {
-
+            $GLOBALS['DB']->exec("DELETE FROM courses;");
         }
 
-        static function findById()
+        static function findById($search_id)
         {
-
+            $courses = Course::getAll();
+            foreach($courses as $course) {
+                if ($course->getId() == $search_id) {
+                    return $course;
+                }
+            }
         }
     }
 ?>
