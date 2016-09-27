@@ -97,6 +97,7 @@
 
         static function findById($search_id)
         {
+            // uses static function getAll for simpler code, but not as efficient as Student findById() in computing time
             $courses = Course::getAll();
             foreach($courses as $course) {
                 if ($course->getId() == $search_id) {
@@ -104,5 +105,7 @@
                 }
             }
         }
+
+//End Class
     }
 ?>
