@@ -184,6 +184,112 @@
             $this->assertEquals([$test_course1], $result);
         }
 
-//End Test`
+        function test_addToStudentList()
+        {
+            //Arrange
+            $course_number1 = "HIS100";
+            $course_name1 = "History 100";
+            $test_course1 = new Course($course_number1, $course_name1);
+            $test_course1->save();
+
+            $name1 = "John Miller";
+            $enrollment_date1 = "04-24-2015";
+            $test_student1 = new Student($name1, $enrollment_date1);
+            $test_student1->save();
+
+            //Act
+            $test_course1->addToStudentList($test_student1);
+            $result = $test_course1->getStudentList();
+
+            //Assert
+            $this->assertEquals([$test_student1], $result);
+        }
+
+        function test_deleteStudentList()
+        {
+            //Arrange
+            $course_number1 = "HIS100";
+            $course_name1 = "History 100";
+            $test_course1 = new Course($course_number1, $course_name1);
+            $test_course1->save();
+
+            $name1 = "John Miller";
+            $enrollment_date1 = "04-24-2015";
+            $test_student1 = new Student($name1, $enrollment_date1);
+            $test_student1->save();
+
+            $name2 = "Steve Johnson";
+            $enrollment_date2 = "04-25-2014";
+            $test_student2 = new Student($name2, $enrollment_date2);
+            $test_student2->save();
+            $test_course1->addToStudentList($test_student1);
+            $test_course1->addToStudentList($test_student2);
+
+            //Act
+            $test_course1->deleteStudentList();
+            $result = $test_course1->getStudentList();
+
+            //Assert
+            $this->assertEquals([], $result);
+
+        }
+
+        function test_deleteFromStudentList()
+        {
+            //Arrange
+            $course_number1 = "HIS100";
+            $course_name1 = "History 100";
+            $test_course1 = new Course($course_number1, $course_name1);
+            $test_course1->save();
+
+            $name1 = "John Miller";
+            $enrollment_date1 = "04-24-2015";
+            $test_student1 = new Student($name1, $enrollment_date1);
+            $test_student1->save();
+            $test_course1->addToStudentList($test_student1);
+
+            $name2 = "Steve Johnson";
+            $enrollment_date2 = "04-25-2014";
+            $test_student2 = new Student($name2, $enrollment_date2);
+            $test_student2->save();
+            $test_course1->addToStudentList($test_student2);
+
+            //Act
+            $test_course1->deleteFromStudentList($test_student2);
+            $result = $test_course1->getStudentList();
+
+            //Assert
+            $this->assertEquals([$test_student1], $result);
+
+        }
+
+        function test_getStudentList()
+        {
+            //Arrange
+            $course_number1 = "HIS100";
+            $course_name1 = "History 100";
+            $test_course1 = new Course($course_number1, $course_name1);
+            $test_course1->save();
+
+            $name1 = "John Miller";
+            $enrollment_date1 = "04-24-2015";
+            $test_student1 = new Student($name1, $enrollment_date1);
+            $test_student1->save();
+            $test_course1->addToStudentList($test_student1);
+
+            $name2 = "Steve Johnson";
+            $enrollment_date2 = "04-25-2014";
+            $test_student2 = new Student($name2, $enrollment_date2);
+            $test_student2->save();
+            $test_course1->addToStudentList($test_student2);
+
+            //Act
+            $result = $test_course1->getStudentList();
+
+            //Assert
+            $this->assertEquals([$test_student1, $test_student2], $result);
+        }
+
+//End Test
     }
 ?>

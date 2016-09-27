@@ -61,20 +61,43 @@
             $GLOBALS['DB']->exec("UPDATE courses SET course_name = '{$this->course_name}', course_number = '{$this->course_number}'  WHERE id = {$this->id};");
         }
 
-        function addStudent()
+        function addToStudentList($student)
         {
-
+            //Adds a student to the course's student list
+            $GLOBALS['DB']->exec("INSERT INTO courses_students (student_id, course_id) VALUES ({$student->getId()}, {$this->id});");
         }
 
-        function deleteStudent()
+        function deleteStudentList()
         {
+            //deletes the entire student list
+            $GLOBALS['DB']->exec("DELETE FROM courses_students WHERE course_id = {$this->id};");
+        }
 
+        function deleteFromStudentList($student)
+        {
+            //deletes a student from the course's student list
+            $GLOBALS['DB']->exec("DELETE FROM courses_students WHERE student_id = {$student->getId()} AND course_id = {$this->id};");
         }
 
         function getStudentList()
         {
-
+            //Returns a list of students by course id
+            $results = $GLOBALS['DB']->query(
+            "SELECT students.id FROM
+            students JOIN courses_students ON (students.id = courses_students.student_id)
+                     JOIN courses ON (courses_students.course_id = courses.id)
+            WHERE courses.id = {$this->id};"
+            );
+            $student_list = array();
+            foreach($results as $result) {
+                $new_student = Student::findById($result['id']);
+                array_push($student_list, $new_student);
+            }
+            return $student_list;
         }
+
+
+
 //Static Methods
         static function getAll()
         {
